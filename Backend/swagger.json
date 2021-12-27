@@ -1,0 +1,182 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "3.0.0",
+      "title": "Documentation API",
+      "description": "Documentation de l'api de Evento",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+
+    "paths": {
+      "/commentaires/{idEvent}": {
+        "get": {
+          "summary": "Récupère les commentaires en fonctions de l'évènement",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/Commentaires"
+              }
+            }
+          }
+        }
+      },
+      "/commentaires": {
+        "post": {
+            "description": "Ajout d'un nouveau commentaires",
+            "parameters": [
+                {
+                  "name": "commentaire",
+                  "in": "body",
+                  "description": "Commentaire a ajouter",
+                  "schema": {
+                    "$ref": "#/definitions/Commentaire"
+                  }
+                }
+            ],
+            "produces": ["application/json"],
+            "responses": {
+                "201": {
+                  "description": "Commentaire ajouté"
+                }
+            }
+        }
+      },
+      "/evenements": {
+        "get": {
+            "summary": "Récupère tout les évènements",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "$ref": "#/definitions/Evenements"
+                }
+              }
+            }
+        },
+        "post": {
+            "description": "Ajout d'un nouvel évènement",
+            "parameters": [
+                {
+                    "name": "evenement",
+                    "in": "body",
+                    "description": "Evenement a ajouter",
+                    "schema": {
+                    "$ref": "#/definitions/EvenementPost"
+                    }
+                }
+            ],
+            "produces": ["application/json"],
+            "responses": {
+                "201": {
+                    "description": "Evenement ajouté"
+                }
+            }
+        }
+      },
+      "/evenements/{idEvent}": {
+        "get": {
+            "summary": "Récupère tout le contenue d'un seul élément",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "$ref": "#/definitions/Evenement"
+                }
+              }
+            }
+        }  
+      },
+      "/evenements/today": {
+        "get": {
+            "summary": "Compte le nombre dévènement prévus pour la journée",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                    "properties": {
+                        "count": {
+                            "type": "integer"
+                        }
+                    }
+                }
+              }
+            }
+        }
+      }
+    },
+    "definitions": {
+      "Commentaire": {
+        "required": ["id", "auteur", "message", "date"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "auteur": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "Commentaires": {
+        "type": "array",
+        "$ref": "#/definitions/Commentaire"
+      },
+      "Evenement": {
+        "required": ["id", "nom", "email", "description", "date"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "uniqueItems": true
+          },
+          "nom": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "EvenementPost": {
+        "required": ["nom", "email", "description", "date"],
+        "properties": {
+          "nom": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "Evenements": {
+        "type": "array",
+        "$ref": "#/definitions/Evenement"
+      }
+    }
+  }

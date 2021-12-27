@@ -32,8 +32,6 @@
       loading-text="Loading... Please wait"
     >
     <template v-slot:top>
-      
-
       <v-btn
         class="mx-2"
         fab

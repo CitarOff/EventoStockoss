@@ -3,6 +3,7 @@ import fs = require('fs');
 
 // Déclaration des variables
 const myFile:Array<String> =  fs.readFileSync('./numbers.txt').toString().split("\n");
+
 let gamma:string = "";
 let epsilon:string = "";
 let Dgamma:number;
