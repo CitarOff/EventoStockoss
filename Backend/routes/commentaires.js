@@ -1,11 +1,12 @@
 // Déclaration des variables
 const { Router } = require('express')
+const { devNull } = require('os')
 const db = require('../database')
 const router = Router()
 
 // Routes
     // Récupérations des commentaires selon l'id de l'évènement
-router.get('/:idEvent', (req, res) => {
+router.get('/:idEvent', async (req, res) => {
 
 })
 
