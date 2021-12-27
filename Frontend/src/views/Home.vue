@@ -231,6 +231,13 @@ export default {
         axios
         .post(this.$hostname+'/evenement/', this.newEvent)
         .then(() => {
+          this.newEvent = {
+            nom: '',
+            email: '',
+            desc: '',
+            date: '',
+            heure: ''
+          }
           this.dialog = false
           this.refresh()
         })

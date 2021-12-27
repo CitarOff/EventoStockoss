@@ -1,25 +1,114 @@
 <template>
   <main>
-    <b-card title="Évènement" sub-title="" class="evenements">
-      <b-card-text style="text-align: left">
-        <b-row class="my-1">
-          <span><b>Nom:</b> {{ events.nom }} </span>
-          <span><b>Email:</b> {{ events.email }} </span>
-          <span><b>Date:</b> {{ events.date }} </span>
-          <br><br>
-          <span style="text-align: center"><b>Description:</b></span>
-          <span>{{ events.description }}</span>
-        </b-row >
-      </b-card-text>
-    </b-card>
-    <b-card sub-title="" class="commentaires">
-        <b-card-title>Commentaires <b-icon icon="plus-circle" aria-hidden="true" @click="addComment()" class="mr-2"></b-icon></b-card-title>
-        <div class="comment" v-for="comment in commentaires" :key="comment.id">
-            <span>{{ comment.auteur }}</span>
-            <span>{{ comment.message }}</span>
-            <span>{{ comment.date }}</span>
-        </div>
-    </b-card>
+      <v-container>
+    <v-row justify="space-around">
+      <v-card width="100%">
+        <v-img
+          height="100px"
+          src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+        >
+        </v-img>
+        <v-card-text style="display : flex; flex-direction: column; color: black; border-bottom: 2px solid #3f51b5;" class="font-weight-medium">
+            <span>Nom : {{events.nom}} </span>
+            <span>Date: {{events.date}}</span>
+            <span>Organisateur: {{events.email}}</span>
+            <br>
+            <span>Description: </span>
+            <span style="text-align: center">{{events.description}}</span>
+        </v-card-text>
+        <v-card-text>
+          <div class="font-weight-bold ml-8 mb-2">
+            Commentaires
+            <v-dialog
+                v-model="dialog"
+                persistent
+                max-width="600px"
+                >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        class="mx-2"
+                        fab
+                        dark
+                        small
+                        color="indigo"
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon dark>
+                        mdi-plus
+                        </v-icon>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-card-title>
+                    <span class="text-h5">Nouveau commentaire</span>
+                    </v-card-title>
+                    <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-text-field
+                                label="Auteur*"
+                                required
+                                v-model="newComment.auteur"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-textarea
+                                    solo
+                                    label="Message*"
+                                    counter
+                                    maxlength="140"
+                                    required
+                                    v-model="newComment.message"
+                                ></v-textarea>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    <small>*indicates required field</small>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialog = false"
+                    >
+                        Annuler
+                    </v-btn>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="addComment"
+                    >
+                        Enregistrer
+                    </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+          </div>
+
+          <v-timeline
+            align-top
+            dense
+          >
+            <v-timeline-item
+              v-for="message in commentaires"
+              :key="message.id"
+              small
+            >
+              <div>
+                <div class="font-weight-normal">
+                  <strong>{{ message.auteur }}</strong> @{{ message.date }}
+                </div>
+                <div>{{ message.message }}</div>
+              </div>
+            </v-timeline-item>
+          </v-timeline>
+        </v-card-text>
+      </v-card>
+    </v-row>
+  </v-container>
   </main>
 </template>
 
@@ -31,9 +120,14 @@ export default {
   data: function () {
     return {
       eventBusy: true,
+      dialog: false,
       commentaryBusy: true,
       events: {},
-      commentaires : []
+      commentaires : [],
+      newComment: {
+        auteur: '',
+        message: ''
+      }
     }
   },
   mounted () {
@@ -52,7 +146,23 @@ export default {
       })
   }, methods: {
       addComment() {
-          alert("noice")
+        const {auteur, message} = this.newComment
+        if(auteur && message) {
+            const commentaire = {
+                id_event: this.$route.params.id,
+                auteur: auteur,
+                message: message
+            }
+
+            axios
+            .post(this.$hostname+'/commentaire/', commentaire)
+            .then(() => {
+                this.newComment = {auteur: '', message: ''}
+                this.dialog = false
+                this.$router.go(this.$router.currentRoute)
+            })
+        }
+        this.dialog = false
       }
   }
 }
