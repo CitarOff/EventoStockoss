@@ -1,55 +1,77 @@
 <template>
   <main>
-    <b-card
-      header="Liste des evènements"
-      header-tag="header"
-      style="max-height: 60rem; overflow-x: hidden; overflow-y: auto"
+    <v-card>
+    <v-card-title>
+      Évènements
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Rechercher"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="events"
+      :search="search"
+      :loading="isBusy"
+      loading-text="Loading... Please wait"
     >
-    <b-row>
-      <b-col lg="10" class="my-1">
-        <b-form-group
-          label-for="filter-input"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              id="filter-input"
-              v-model="filter"
-              type="search"
-              placeholder="Recherche"
-            ></b-form-input>
+    <template v-slot:top>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        small
+        color="indigo"
+        @click="search = ''"
+      >
+        <v-icon dark>
+          mdi-cancel
+        </v-icon>
+      </v-btn>
 
-            <b-input-group-append class="inputGroup">
-              <b-button :disabled="!filter" @click="filter = ''">Annuler</b-button>
-            </b-input-group-append>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        small
+        color="indigo"
+        @click="refresh()"
+      >
+        <v-icon dark>
+          mdi-cached
+        </v-icon>
+      </v-btn>
 
-            <b-input-group-append class="inputGroup">
-              <b-button @click="refresh()" class="btn btn-primary">Rafraîchir</b-button>
-            </b-input-group-append>
+      <v-btn
+        class="mx-2"
+        fab
+        dark
+        small
+        color="indigo"
+        @click="add()"
+      >
+        <v-icon dark>
+          mdi-plus
+        </v-icon>
+      </v-btn>
+    </template>
 
-            <b-input-group-append class="inputGroup">
-              <b-button @click="add()">Ajouter</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-    </b-row>
-
-    <b-table striped hover small :items="events" :fields="header" :busy="isBusy" :filter="filter" responsive="sm">
-      <template #table-busy>
-          <div class="text-center text-danger my-2">
-              <b-spinner class="align-middle"></b-spinner>
-              <strong>Loading...</strong>
-        </div>
-      </template>
-      <template #cell(action)="row">
-          <b-icon icon="arrow-right-circle-fill" aria-hidden="true" @click="open(row.item.id)" class="mr-2"></b-icon>
-      </template>
-    </b-table>
-    </b-card>
+    <template v-slot:item.action="{ item }">
+      <v-icon
+        small
+        class="mr-2"
+        @click="open(item.id)"
+      >
+        mdi-format-list-bulleted-square
+      </v-icon>
+    </template>
+    
+    </v-data-table>
+  </v-card>
   </main>
 </template>
 
@@ -59,31 +81,31 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
-      header: [
+      headers: [
         {
-          key: 'nom',
-          label: 'Nom',
-          sortable: true
+          value: 'nom',
+          text: 'Nom',
+          filterable: true
         },
         {
-          key: 'date',
-          label: 'Date',
-          sortable: true
+          value: 'date',
+          text: 'Date',
+          filterable: true
         },
         {
-          key: 'email',
-          label: 'Organisateur',
-          sortable: true
+          value: 'email',
+          text: 'Organisateur',
+          filterable: true
         },
         { 
-          key: 'action', 
-          label: '',
-          sortable: false
+          value: 'action', 
+          text: 'Ouvrir',
+          filterable: false
         }
       ],
       events: [],
       isBusy: true,
-      filter: ""
+      search: ""
     }
   },
   mounted () {
@@ -94,6 +116,9 @@ export default {
         this.isBusy = false;
       })
   }, methods: {
+    add() {
+
+    },
     open(id) {
       this.$router.push({path: '/evenement/'+id})
     },
