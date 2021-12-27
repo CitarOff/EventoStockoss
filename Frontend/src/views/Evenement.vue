@@ -5,7 +5,7 @@
       <v-card width="100%">
         <v-img
           height="100px"
-          src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+          src="https://picsum.photos/1024"
         >
         </v-img>
         <v-card-text style="display : flex; flex-direction: column; color: black; border-bottom: 2px solid #3f51b5;" class="font-weight-medium">
