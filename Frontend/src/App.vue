@@ -4,7 +4,7 @@
       dark
       color="primary"
     >
-      <v-icon>mdi-home</v-icon>
+      <router-link to='/'><v-icon>mdi-home</v-icon></router-link>
       <v-spacer></v-spacer>
       <v-icon>mdi-message</v-icon>
       <span>{{ nbEvent.count }} évènements aujourd'hui</span>
