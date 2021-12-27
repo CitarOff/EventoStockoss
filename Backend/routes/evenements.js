@@ -6,7 +6,7 @@ const router = Router()
 // Routes
     // Récupérations de tout les évènements
 router.get('/', async (req, res) => {
-    const resultDB = await db.promise().query('SELECT id, nom, DATE_FORMAT(date, "%d/%m/%Y %H:%i") AS date, email FROM evenements')
+    const resultDB = await db.promise().query('SELECT id, nom, DATE_FORMAT(date, "%d/%m/%Y %H:%i") AS date, email FROM evenements WHERE (((date)>=Now()-10))')
     res.status(200).send(resultDB[0])
 })
 
