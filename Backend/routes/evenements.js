@@ -15,6 +15,11 @@ router.get('/today', async (req, res) => {
     res.status(200).send(resultDB[0][0])
 })
 
+router.get('/date', async (req, res) => {
+    const resultDB = await db.promise().query('SELECT date FROM evenements WHERE DATEDIFF(NOW(), evenements.date)<=10')
+    res.status(200).send(resultDB[0])
+})
+
     // Récupération d'un évenement selon son ID
 router.get('/:idEvent', async (req, res) => {
     if(req.params.idEvent == "") { res.status(400).send({error: "Aucun ID d'évènement en paramètre"})}
@@ -29,9 +34,18 @@ router.post('/', (req, res) => {
 
     if(nom && date && desc && email && heure) {
         try {
-            const full_date = date + ' ' + heure
-            db.promise().query(`INSERT INTO evenements (nom, date, description, email) VALUES('${nom}','${full_date}','${desc}','${email}')`)
-            res.sendStatus(201)
+            const full_date = date + ' ' + heure;
+            let sqlReq = `INSERT INTO evenements (nom, date, description, email) VALUES(?, ?, ?, ?)`;
+            let sqlVal = [nom, full_date, desc, email];
+
+            db.query(sqlReq, sqlVal, (err) => {
+                if (err) {
+                    console.log(err.message)
+                    res.status(500).send(err.message);
+                }
+
+                res.sendStatus(200)
+              });
         } catch (e) {
             console.log(e)
             res.status(500).send(e)
