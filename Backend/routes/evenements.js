@@ -10,6 +10,11 @@ router.get('/', async (req, res) => {
     res.status(200).send(resultDB[0])
 })
 
+router.get('/today', async (req, res) => {
+    const resultDB = await db.promise().query('SELECT COUNT(id) AS count FROM evenements WHERE DATE_FORMAT(`date`, "%Y/%m/%d") = CURDATE()')
+    res.status(200).send(resultDB[0][0])
+})
+
     // Récupération d'un évenement selon son ID
 router.get('/:idEvent', async (req, res) => {
     if(req.params.idEvent == "") { res.status(400).send({error: "Aucun ID d'évènement en paramètre"})}

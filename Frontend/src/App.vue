@@ -7,7 +7,7 @@
       <v-icon>mdi-home</v-icon>
       <v-spacer></v-spacer>
       <v-icon>mdi-message</v-icon>
-      <span>10 évènements aujourd'hui</span>
+      <span>{{ nbEvent.count }} évènements aujourd'hui</span>
       <v-spacer></v-spacer>
       <span>12:30</span>
     </v-system-bar>
@@ -18,12 +18,20 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
-  name: 'App',
-
-  data: () => ({
-    //
-  }),
-};
+  data: function () {
+    return {
+      nbEvent: 0
+    }
+  },
+  mounted () {
+    axios
+      .get(this.$hostname+'/evenement/today')
+      .then(response => {
+        this.nbEvent = response.data
+      })
+  }
+}
 </script>

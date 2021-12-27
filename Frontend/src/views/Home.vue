@@ -4,6 +4,18 @@
     <v-card-title>
       Évènements
       <v-spacer></v-spacer>
+      <v-btn
+        class="mx-3"
+        fab
+        dark
+        x-small
+        color="indigo"
+        @click="search = ''"
+      >
+        <v-icon dark>
+          mdi-cancel
+        </v-icon>
+      </v-btn>
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -20,18 +32,7 @@
       loading-text="Loading... Please wait"
     >
     <template v-slot:top>
-      <v-btn
-        class="mx-2"
-        fab
-        dark
-        small
-        color="indigo"
-        @click="search = ''"
-      >
-        <v-icon dark>
-          mdi-cancel
-        </v-icon>
-      </v-btn>
+      
 
       <v-btn
         class="mx-2"
