@@ -169,14 +169,33 @@
         mdi-format-list-bulleted-square
       </v-icon>
     </template>
+
+     <template v-slot:item.nom="{ item }">
+      <v-chip
+        :color="getColor(item.dateNT)"
+        dark
+      >
+        {{ item.nom }}
+      </v-chip>
+    </template>
     
     </v-data-table>
+     <v-card-title class="legende">
+      <span> Légendes: </span>
+      <span class="blocLegende">-10 jours</span>
+      <span class="blocLegende">+10 jours</span>
+      <span class="blocLegende">Passé</span>
+     </v-card-title>
+     <div >
+       
+     </div>
   </v-card>
   </main>
 </template>
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   data: function () {
@@ -208,6 +227,7 @@ export default {
       events: [],
       isBusy: true,
       search: "",
+      today: "",
       newEvent: {
         nom: '',
         email: '',
@@ -218,6 +238,7 @@ export default {
     }
   },
   mounted () {
+    this.today = moment(new Date()).format('DD/MM/YYYY') ;
     axios
       .get(this.$hostname+'/evenement/')
       .then(response => {
@@ -255,6 +276,19 @@ export default {
         this.events = response.data
         this.isBusy = false;
       })
+    },
+    getColor (_date) {
+      const diff = moment.utc(moment(this.today,"DD/MM/YYYY").diff(moment(_date,"DD/MM/YYYY"))).format("DD")
+      const isBefore = moment(this.today,"DD/MM/YYYY").isAfter(moment(_date,"DD/MM/YYYY"), 'days')
+
+      console.log(diff)
+
+      if(isBefore){
+        return 'grey'
+      }
+      else if(diff <= 10){
+        return 'red'
+      }
     }
   }
 }
@@ -269,4 +303,53 @@ main {
 .inputGroup {
   margin-left: 15px;
 }
+
+.legende {
+  display: flex;
+  flex-direction: row;
+  margin-left: 25px;
+  justify-content: flex-start;
+  align-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  letter-spacing: 0.0125em;
+  line-height: 2rem;
+}
+
+.blocLegende {
+  font-size: 0.8em;
+   align-content: center;
+  align-items: center;
+  letter-spacing: 0.0125em;
+  line-height: 2rem;
+}
+
+.blocLegende:nth-child(2):before {
+  content: " ";
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  margin-left: 25px;
+  background-color: #f44336;
+}
+
+.blocLegende:nth-child(3):before {
+  content: " ";
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: #555555;
+}
+
+.blocLegende:nth-child(4):before {
+  content: " ";
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  background-color: #9e9e9e;
+}
+
 </style>
