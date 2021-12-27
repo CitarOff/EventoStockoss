@@ -12,7 +12,8 @@
         </b-row >
       </b-card-text>
     </b-card>
-    <b-card title="Commentaires" sub-title="" class="commentaires">
+    <b-card sub-title="" class="commentaires">
+        <b-card-title>Commentaires <b-icon icon="plus-circle" aria-hidden="true" @click="addComment()" class="mr-2"></b-icon></b-card-title>
         <div class="comment" v-for="comment in commentaires" :key="comment.id">
             <span>{{ comment.auteur }}</span>
             <span>{{ comment.message }}</span>
@@ -50,7 +51,9 @@ export default {
         this.commentaryBusy = false;
       })
   }, methods: {
-
+      addComment() {
+          alert("noice")
+      }
   }
 }
 </script>
@@ -58,7 +61,7 @@ export default {
 <style scoped>
 main {
     width: 90%; 
-    margin: 0, auto; 
+    margin: 0 auto; 
 }
 
 .my-1 {
@@ -86,7 +89,7 @@ main {
 .comment {
     display: flex;
     flex-direction: column;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 10px;
     margin-bottom: 20px;
 }
