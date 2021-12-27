@@ -10,11 +10,13 @@ router.get('/', async (req, res) => {
     res.status(200).send(resultDB[0])
 })
 
+    // Récupérations du nombre d'évènements dans la journée
 router.get('/today', async (req, res) => {
     const resultDB = await db.promise().query('SELECT COUNT(id) AS count FROM evenements WHERE DATE_FORMAT(`date`, "%Y/%m/%d") = CURDATE()')
     res.status(200).send(resultDB[0][0])
 })
 
+    // Récupérations de toutes les dates au formats de la DB
 router.get('/date', async (req, res) => {
     const resultDB = await db.promise().query('SELECT date FROM evenements WHERE DATEDIFF(NOW(), evenements.date)<=10')
     res.status(200).send(resultDB[0])

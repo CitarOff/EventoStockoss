@@ -111,6 +111,23 @@
               }
             }
         }
+      },
+      "/evenements/date": {
+        "get": {
+            "summary": "Récupérations de toutes les dates au formats de la DB",
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                    "properties": {
+                        "date": {
+                            "type": "datetime"
+                        }
+                    }
+                }
+              }
+            }
+        }
       }
     },
     "definitions": {
