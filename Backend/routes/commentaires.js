@@ -8,7 +8,7 @@ const router = Router()
 router.get('/:idEvent', async (req, res) => {
     if(req.params.idEvent == "") {res.status(400).send({error: "Aucun ID d'évènement en paramètre"})}
 
-    const resultDB = await db.promise().query(`SELECT * FROM commentaires WHERE id_evenement = ${req.params.idEvent}`)
+    const resultDB = await db.promise().query(`SELECT id, auteur, message, DATE_FORMAT(date, "%d/%m/%Y %H:%i") AS date FROM commentaires WHERE id_evenement = ${req.params.idEvent}`)
     res.status(200).send(resultDB[0])
 })
 
