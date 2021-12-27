@@ -25,11 +25,12 @@ router.get('/:idEvent', async (req, res) => {
 
     // Création d'un évènement
 router.post('/', (req, res) => {
-    const {nom, date, description, email} = req.body
+    const {nom, date, desc, email, heure} = req.body
 
-    if(nom && date && description && email) {
+    if(nom && date && desc && email && heure) {
         try {
-            db.promise().query(`INSERT INTO evenements (nom, date, description, email) VALUES('${nom}','${date}','${description}','${email}')`)
+            const full_date = date + ' ' + heure
+            db.promise().query(`INSERT INTO evenements (nom, date, description, email) VALUES('${nom}','${full_date}','${desc}','${email}')`)
             res.sendStatus(201)
         } catch (e) {
             console.log(e)

@@ -47,18 +47,117 @@
         </v-icon>
       </v-btn>
 
-      <v-btn
-        class="mx-2"
-        fab
-        dark
-        small
-        color="indigo"
-        @click="add()"
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="600px"
       >
-        <v-icon dark>
-          mdi-plus
-        </v-icon>
-      </v-btn>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            small
+            color="indigo"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon dark>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Nouvelle évènement</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Nom de l'évènement*"
+                    counter
+                    maxlength="60"
+                    required
+                    v-model="newEvent.nom"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    label="Email*"
+                    required
+                    :rules="emailRules"
+                    v-model="newEvent.email"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="newEvent.date"
+                        label="Date*"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="newEvent.date"
+                      @input="menu2 = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col>
+                  <v-time-picker
+                    v-model="newEvent.heure"
+                    landscape
+                    required
+                    format="24hr"
+                  ></v-time-picker>
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    solo
+                    name="input-7-4"
+                    label="Description*"
+                    counter
+                    maxlength="300"
+                    required
+                     v-model="newEvent.desc"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+            </v-container>
+            <small>*indique un champ obligatoire</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialog = false"
+            >
+              Annuler
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="add()"
+            >
+              Enregistrer
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog> 
     </template>
 
     <template v-slot:item.action="{ item }">
@@ -82,6 +181,8 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
+      dialog: false,
+      emailRules: [ v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,4})+$/.test(v) || 'E-mail invalide'],
       headers: [
         {
           value: 'nom',
@@ -106,7 +207,14 @@ export default {
       ],
       events: [],
       isBusy: true,
-      search: ""
+      search: "",
+      newEvent: {
+        nom: '',
+        email: '',
+        desc: '',
+        date: '',
+        heure: ''
+      }
     }
   },
   mounted () {
@@ -118,7 +226,15 @@ export default {
       })
   }, methods: {
     add() {
-
+      const {nom, email, desc, date, heure} = this.newEvent
+      if(nom && email && desc && date && heure) {
+        axios
+        .post(this.$hostname+'/evenement/', this.newEvent)
+        .then(() => {
+          this.dialog = false
+          this.refresh()
+        })
+      }
     },
     open(id) {
       this.$router.push({path: '/evenement/'+id})
